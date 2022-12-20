@@ -58,12 +58,10 @@ if dashboard_option == FDC:
     food = foods_df[foods_df["name"] == food_option]
     response = None
     if use_server:
-        response = requests.get(
-            f"{base_url}/food/{food['fdc_id'].values[0]}", timeout=5
-        )
+        response = requests.get(f"{base_url}/food/{food['fdc_id'].item()}", timeout=5)
     else:
         response = requests.get(
-            f"https://api.nal.usda.gov/fdc/v1/food/{food['fdc_id'].values[0]}?api_key=DEMO_KEY",
+            f"https://api.nal.usda.gov/fdc/v1/food/{food['fdc_id'].item()}?api_key=DEMO_KEY",
             timeout=10,
         )
     tab1, tab2 = st.tabs(["NutritionProduct", "Response"])
@@ -98,11 +96,11 @@ if dashboard_option == DSLD:
     response = None
     if use_server:
         response = requests.get(
-            f"{base_url}/supplement/{supplement['dsld_id'].values[0]}", timeout=5
+            f"{base_url}/supplement/{supplement['dsld_id'].item()}", timeout=5
         )
     else:
         response = requests.get(
-            f"https://api.ods.od.nih.gov/dsld/v8/label/{supplement['dsld_id'].values[0]}",
+            f"https://api.ods.od.nih.gov/dsld/v8/label/{supplement['dsld_id'].item()}",
             timeout=10,
         )
 
