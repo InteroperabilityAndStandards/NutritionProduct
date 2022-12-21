@@ -2,12 +2,13 @@
 https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 """
 
-
 import numpy as np
 import pandas as pd
 import requests
 import streamlit as st
 from dotenv import load_dotenv
+
+import config
 
 load_dotenv()
 
@@ -41,13 +42,7 @@ st.header(dashboard_option)
 ### Food Data Central
 if dashboard_option == FDC:
     nutrition_product = {}
-    foods_df = pd.DataFrame(
-        [
-            {"name": "Apple", "fdc_id": 1750340},
-            {"name": "Banana", "fdc_id": 1105314},
-            {"name": "Skippy Peanut Butter", "fdc_id": 1759570},
-        ]
-    )
+    foods_df = pd.DataFrame(config.DEFAULT_FOODS)
 
     food_option = st.selectbox(
         "Select Food?",
@@ -75,16 +70,7 @@ if dashboard_option == FDC:
 ### Dietary Supplement Label Database
 if dashboard_option == DSLD:
     nutrition_product = {}
-    supplements_df = pd.DataFrame(
-        [
-            {"name": "Centrum Adults", "dsld_id": 256965},
-            {"name": "Vitamin D", "dsld_id": 252101},
-            {
-                "name": "Kirkland Signature Extra Strength Glucosamine",
-                "dsld_id": 207402,
-            },
-        ]
-    )
+    supplements_df = pd.DataFrame(config.DEFAULT_SUPPLEMENTS)
 
     supplement_option = st.sidebar.selectbox(
         "Select supplement?",
