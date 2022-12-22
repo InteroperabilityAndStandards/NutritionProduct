@@ -44,7 +44,7 @@ def main(use_server: bool, base_url: str):
             for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
                 ingredients.append({"name": ingredient["name"]})
             for contanct in product["contacts"]:
-                manufacturer.append({"name": contanct["name"]})
+                manufacturer.append({"active": True, "name": contanct["name"]})
 
             nutrition_product = {
                 "resourceType": "NutritionProduct",

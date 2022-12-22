@@ -32,18 +32,42 @@ def main(use_server: bool, base_url: str):
             product = response
             ingredients = []
             manufacturer = []
+            nutrients = []
 
             # for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
             #     ingredients.append({"name": ingredient["name"]})
             # for contanct in product["contacts"]:
-            #     manufacturer.append({"name": contanct["name"]})
+            manufacturer.append(
+                {
+                    "active": True if "brandOwner" in product else False,
+                    "name": product["brandOwner"] if "brandOwner" in product else "n/a",
+                }
+            )
+            for ingredient in product["foodNutrients"]:
+
+                quantity = ingredient["amount"] if "amount" in ingredient else None
+                unit = (
+                    ingredient["nutrient"]["unitName"]
+                    if "unitName" in ingredient["nutrient"]
+                    else None
+                )
+
+                nutrients.append(
+                    {
+                        "name": ingredient["nutrient"]["name"],
+                        "quantity": quantity,
+                        "quantity_unit_symbol": unit,
+                    }
+                )
 
             nutrition_product = {
                 "resourceType": "NutritionProduct",
                 "status": status_option,
                 "manufacturer": manufacturer,
                 "ingredient": ingredients,
+                "nutrients": nutrients,
             }
+
             st.session_state.nutrition_product = nutrition_product
 
     download_button.main()
