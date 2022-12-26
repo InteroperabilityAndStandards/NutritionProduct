@@ -8,13 +8,19 @@ from dotenv import load_dotenv
 import json
 
 from src import dsld_page, fdc_page
-from src.components import download_button
+from src.components import resource_selectbox
 
 load_dotenv()
 
 st.set_page_config(page_title="NutrientProduct", page_icon=":pill:")
 
 base_url = "http://localhost:8000"
+
+
+APP_DASHBOARDS = [
+    {"dashboard": "Food Data Central"},
+    {"dashboard": "Dietary Supplement Label Database"},
+]
 
 FDC = "Food Data Central"
 DSLD = "Dietary Supplement Label Database"
@@ -45,6 +51,9 @@ dashboard_option = st.sidebar.selectbox(
     on_change=set_nutrient_product_state_to_none,
 )
 
+resource_selectbox.main()
+
+st.caption(dashboard_option)
 
 ### Food Data Central
 if dashboard_option == FDC:

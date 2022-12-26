@@ -1,1 +1,4 @@
 .env
+lib/
+component-template-master/
+*.zip

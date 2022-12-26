@@ -1,17 +1,16 @@
-import os
 from typing import Union
 
 import requests
-from dotenv import load_dotenv
 from fastapi import FastAPI
+from mangum import Mangum
 
-load_dotenv()
 app = FastAPI()
+handler = Mangum(app)
 
 
 @app.get("/")
 async def read_root():
-    return {"Hello": "World"}
+    return {"message": "Welcome to the FHIR Nutrition API!"}
 
 
 @app.get("/supplement/{item_id}")
