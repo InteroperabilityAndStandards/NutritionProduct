@@ -3,9 +3,10 @@ https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 """
 
 
+import os
+
 import streamlit as st
 from dotenv import load_dotenv
-import json
 
 from src import dsld_page, fdc_page
 from src.components import resource_selectbox
@@ -14,7 +15,8 @@ load_dotenv()
 
 st.set_page_config(page_title="NutrientProduct", page_icon=":pill:")
 
-base_url = "http://localhost:8000"
+# base_url = "http://localhost:8000"
+base_url = os.getenv("BASE_URL")
 
 
 APP_DASHBOARDS = [
