@@ -6,10 +6,10 @@ https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 import os
 
 import streamlit as st
+import pandas as pd
 from dotenv import load_dotenv
 
 from src import dsld_page, fdc_page
-from src.components import resource_selectbox
 
 load_dotenv()
 
@@ -19,13 +19,23 @@ st.set_page_config(page_title="NutrientProduct", page_icon=":pill:")
 base_url = os.getenv("BASE_URL")
 
 
-APP_DASHBOARDS = [
-    {"dashboard": "Food Data Central"},
-    {"dashboard": "Dietary Supplement Label Database"},
-]
+app_dashboards_df = pd.DataFrame(
+    [
+        {
+            "name": "Food Data Central",
+            "key": "FDC",
+        },
+        {
+            "name": "Dietary Supplement Label Database",
+            "key": "DSLD",
+        },
+    ]
+)
 
-FDC = "Food Data Central"
-DSLD = "Dietary Supplement Label Database"
+
+def set_nutrient_product_state_to_none():
+    st.session_state.nutrition_product = None
+
 
 if "status_option" not in st.session_state:
     st.session_state.status_option = "active"
@@ -40,27 +50,22 @@ with sidebar_col1:
     st.write("[NutritionProduct](https://build.fhir.org/nutritionproduct.html)")
 with sidebar_col2:
     use_server = st.checkbox("Use Server?")
-
-
-def set_nutrient_product_state_to_none():
-    st.session_state.nutrition_product = None
+    set_nutrient_product_state_to_none()
 
 
 dashboard_option = st.sidebar.selectbox(
     "Select Dashboard?",
-    (DSLD, FDC),
+    app_dashboards_df,
     index=0,
     on_change=set_nutrient_product_state_to_none,
 )
 
-resource_selectbox.main()
-
 st.caption(dashboard_option)
 
 ### Food Data Central
-if dashboard_option == FDC:
+if dashboard_option == app_dashboards_df[app_dashboards_df.key == "FDC"].name.item():
     fdc_page.main(use_server, base_url)
 
 ### Dietary Supplement Label Database
-if dashboard_option == DSLD:
+if dashboard_option == app_dashboards_df[app_dashboards_df.key == "DSLD"].name.item():
     dsld_page.main(use_server, base_url)

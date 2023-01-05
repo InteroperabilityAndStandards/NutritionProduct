@@ -2,3 +2,4 @@
 lib/
 component-template-master/
 *.zip
+__pycache__/

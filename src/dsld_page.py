@@ -1,8 +1,8 @@
 import pandas as pd
 import streamlit as st
 
-from .components import download_button, fhir, get_supplements
-
+from .components import download_button, get_supplements, status_select_box
+from .functions import parse_supplement
 
 DEFAULT_SUPPLEMENTS = [
     {"name": "Centrum Adults", "dsld_id": 256965},
@@ -26,7 +26,7 @@ def main(use_server: bool, base_url: str):
             supplements_df,
             0,
         )
-        status_option = fhir.main()
+        status_option = status_select_box.main()
 
         print(st.session_state.nutrition_product)
 
@@ -38,25 +38,14 @@ def main(use_server: bool, base_url: str):
                 use_server, base_url, supplement["dsld_id"].item()
             )
             product = response
-            ingredients = []
-            manufacturer = []
 
-            for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
-                ingredients.append({"name": ingredient["name"]})
-            for contanct in product["contacts"]:
-                manufacturer.append({"active": True, "name": contanct["name"]})
+            nutrition_product = parse_supplement.main(product, status_option)
 
-            nutrition_product = {
-                "resourceType": "NutritionProduct",
-                "status": status_option,
-                "manufacturer": manufacturer,
-                "ingredient": ingredients,
-            }
             st.session_state.nutrition_product = nutrition_product
 
     download_button.main()
 
-    tab1, tab2 = st.tabs(["NutritionProduct", "Response"])
+    tab1, tab2 = st.tabs(["NutritionProduct", "DSLD Response"])
 
     with tab1:
         st.json(nutrition_product)

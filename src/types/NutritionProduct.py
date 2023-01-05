@@ -6,7 +6,7 @@ https://github.com/nazrulworld/fhir.resources
 "quantity": {Quantity(SimpleQuantity)}
 "item": {Reference.register(NutritionProduct)}, "amount": [{Ratio}]
 """
-
+from typing import Literal
 
 from fhir.resources.annotation import Annotation
 from fhir.resources.attachment import Attachment
@@ -28,6 +28,12 @@ from fhir.resources.quantity import Quantity
 from fhir.resources.ratio import Ratio
 from fhir.resources.reference import Reference
 from fhir.resources.substance import Substance
+
+Status = Literal[
+    "active",
+    "inactive",
+    "error",
+]
 
 
 NutritionProduct = {

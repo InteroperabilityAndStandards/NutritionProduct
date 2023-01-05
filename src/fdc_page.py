@@ -1,10 +1,11 @@
 import pandas as pd
 import streamlit as st
 
-from .components import download_button, fhir, get_foods
+from .components import download_button, get_foods, status_select_box
+from .functions import parse_food
 
 DEFAULT_FOODS = [
-    {"name": "Apple", "fdc_id": 1750340},
+    {"name": "Fugi Apple", "fdc_id": 1750340},
     {"name": "Banana", "fdc_id": 1105314},
     {"name": "Skippy Peanut Butter", "fdc_id": 1759570},
 ]
@@ -22,7 +23,7 @@ def main(use_server: bool, base_url: str):
             food_df,
             0,
         )
-        status_option = fhir.main()
+        status_option = status_select_box.main()
 
         # Every form must have a submit button.
         submitted = st.form_submit_button("Submit")
@@ -30,49 +31,14 @@ def main(use_server: bool, base_url: str):
             food = food_df[food_df["name"] == food_name]
             response = get_foods.main(use_server, base_url, food["fdc_id"].item())
             product = response
-            ingredients = []
-            manufacturer = []
-            nutrients = []
 
-            # for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
-            #     ingredients.append({"name": ingredient["name"]})
-            # for contanct in product["contacts"]:
-            manufacturer.append(
-                {
-                    "active": True if "brandOwner" in product else False,
-                    "name": product["brandOwner"] if "brandOwner" in product else "n/a",
-                }
-            )
-            for ingredient in product["foodNutrients"]:
-
-                quantity = ingredient["amount"] if "amount" in ingredient else None
-                unit = (
-                    ingredient["nutrient"]["unitName"]
-                    if "unitName" in ingredient["nutrient"]
-                    else None
-                )
-
-                nutrients.append(
-                    {
-                        "name": ingredient["nutrient"]["name"],
-                        "quantity": quantity,
-                        "quantity_unit_symbol": unit,
-                    }
-                )
-
-            nutrition_product = {
-                "resourceType": "NutritionProduct",
-                "status": status_option,
-                "manufacturer": manufacturer,
-                "ingredient": ingredients,
-                "nutrients": nutrients,
-            }
+            nutrition_product = parse_food.main(product, status_option)
 
             st.session_state.nutrition_product = nutrition_product
 
     download_button.main()
 
-    tab1, tab2 = st.tabs(["NutritionProduct", "Response"])
+    tab1, tab2 = st.tabs(["NutritionProduct", "FDC Response"])
 
     with tab1:
         st.json(nutrition_product)
