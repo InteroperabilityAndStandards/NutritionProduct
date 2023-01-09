@@ -8,12 +8,23 @@ def main(product: dict, status_option):
 
     category = "Supplement"
 
+    code = {
+        "coding": {
+            "system": "https://dsld.od.nih.gov/",
+            "code": product["dsldId"],
+            "display": product["productName"],
+        }
+    }
+
     for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
         ingredients.append(
             {
                 "name": ingredient["name"],
-                "quantity": ingredient["data"]["sfbQuantityQuantity"],
-                "quantity_unit_symbol": ingredient["data"]["unitName"],
+                "amount": {
+                    "value": ingredient["data"]["sfbQuantityQuantity"],
+                    "unit": ingredient["data"]["unitName"],
+                    "comparator": "ad",
+                },
             }
         )
     for contanct in product["contacts"]:
@@ -31,6 +42,7 @@ def main(product: dict, status_option):
 
     nutrition_product = {
         "resourceType": "NutritionProduct",
+        "code": code,
         "status": status_option,
         "category": category,
         "manufacturer": manufacturer,
