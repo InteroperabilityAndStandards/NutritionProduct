@@ -13,9 +13,6 @@ def main(product: dict, status_option):
 
     if "brandedFoodCategory" in product:
         category = product["brandedFoodCategory"]
-    # category = (
-    #     product["foodCategory"]["description"] if "foodCategory" in product else None
-    # )
 
     code = {
         "coding": {
@@ -26,6 +23,7 @@ def main(product: dict, status_option):
     }
 
     known_allergens = None
+    instance = None
     if "butter" in product["description"].lower():
         known_allergens = [
             {
@@ -36,6 +34,16 @@ def main(product: dict, status_option):
                 }
             }
         ]
+
+        instance = {
+            "quantity": "6",
+            "identifier": product["gtinUpc"],
+            "name": product["description"],
+            "lotNumber": "10000004",
+            "expiry": "2023/1/31",
+            "useBy": "2023/1/28",
+            "biologicalSourceEvent": "",
+        }
 
     manufacturer.append(
         {
@@ -63,6 +71,8 @@ def main(product: dict, status_option):
             }
         )
 
+    if "ingredients" in product:
+        ingredients = product["ingredients"]
     # for ingredient in product["ingredients"] if "ingredients" in product else []:
     # print(product["ingredients"])
 
@@ -75,6 +85,7 @@ def main(product: dict, status_option):
         "ingredient": ingredients,
         "nutrients": nutrients,
         "knownAllergen": known_allergens,
+        "instance": instance,
     }
 
     return nutrition_product
