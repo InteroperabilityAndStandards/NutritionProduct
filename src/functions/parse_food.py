@@ -64,7 +64,7 @@ def main(product: dict, status_option):
         )
 
     # for ingredient in product["ingredients"] if "ingredients" in product else []:
-    print(product["ingredients"])
+    # print(product["ingredients"])
 
     nutrition_product = {
         "resourceType": "NutritionProduct",
