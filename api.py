@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from mangum import Mangum
 
 from src.functions import parse_food, parse_supplement
+from src.types.NutritionProduct import Status
 
 app = FastAPI()
 handler = Mangum(app)
