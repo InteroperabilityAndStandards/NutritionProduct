@@ -1,11 +1,11 @@
+import re
+import random
+
+
 def main(product: dict, status_option):
     ingredients = []
     manufacturer = []
     nutrients = []
-
-    # for ingredient in product["dietarySupplementsFacts"][0]["ingredients"]:
-    #     ingredients.append({"name": ingredient["name"]})
-    # for contanct in product["contacts"]:
 
     category = None
     if "foodCategory" in product:
@@ -72,9 +72,18 @@ def main(product: dict, status_option):
         )
 
     if "ingredients" in product:
-        ingredients = product["ingredients"]
-    # for ingredient in product["ingredients"] if "ingredients" in product else []:
-    # print(product["ingredients"])
+        count = 0
+        for ingredient in re.split(r",(?![^()]*\))", product["ingredients"]):
+            count += 1
+            random.seed(count)
+            seed = random.random()
+            ingredients.append(
+                {
+                    "system": "https://fdc.nal.usda.gov/",
+                    "code": int(seed * 100000000),
+                    "display": ingredient.replace(".", "").strip(),
+                }
+            )
 
     nutrition_product = {
         "resourceType": "NutritionProduct",

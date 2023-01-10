@@ -1,5 +1,6 @@
 import requests
 import streamlit as st
+import os
 
 
 def main(use_server: bool, base_url: str, food_name: str):
@@ -11,7 +12,7 @@ def main(use_server: bool, base_url: str, food_name: str):
             response = requests.get(f"{base_url}/food/{food_name}", timeout=15)
         else:
             response = requests.get(
-                f"https://api.nal.usda.gov/fdc/v1/food/{food_name}?api_key=DEMO_KEY",
+                f"https://api.nal.usda.gov/fdc/v1/food/{food_name}?api_key={os.getenv('FOOD_DATA_CENTRAL_API_KEY')}",
                 timeout=15,
             )
     if response and response.status_code == 200:

@@ -6,4 +6,4 @@
 - zip lambda_function.zip -ru src/types
 - zip lambda_function.zip -u api.py
 
-
+https://aws.amazon.com/premiumsupport/knowledge-center/lambda-import-module-error-python/
