@@ -25,7 +25,7 @@ async def get_supplement(item_id: str, status: Status = "active"):
 
     respone = requests.get(
         f"https://api.ods.od.nih.gov/dsld/v8/label/{item_id}",
-        timeout=10,
+        timeout=20,
     )
 
     nutrition_product = parse_supplement.main(respone.json(), status)
@@ -40,7 +40,7 @@ async def get_food(item_id: str, status: Status = "active"):
     """
     respone = requests.get(
         f"https://api.nal.usda.gov/fdc/v1/food/{item_id}?api_key=DEMO_KEY",
-        timeout=10,
+        timeout=20,
     )
 
     nutrition_product = parse_food.main(respone.json(), status)
