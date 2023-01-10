@@ -30,9 +30,11 @@ def main(use_server: bool, base_url: str):
         if submitted:
             food = food_df[food_df["name"] == food_name]
             response = get_foods.main(use_server, base_url, food["fdc_id"].item())
-            product = response
-
-            nutrition_product = parse_food.main(product, status_option)
+            nutrition_product = None
+            if use_server is True:
+                nutrition_product = response
+            else:
+                nutrition_product = parse_food.main(response, status_option)
 
             st.session_state.nutrition_product = nutrition_product
 

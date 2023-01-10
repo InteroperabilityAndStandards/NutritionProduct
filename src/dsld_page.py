@@ -37,9 +37,11 @@ def main(use_server: bool, base_url: str):
             response = get_supplements.main(
                 use_server, base_url, supplement["dsld_id"].item()
             )
-            product = response
-
-            nutrition_product = parse_supplement.main(product, status_option)
+            nutrition_product = None
+            if use_server is True:
+                nutrition_product = response
+            else:
+                nutrition_product = parse_supplement.main(response, status_option)
 
             st.session_state.nutrition_product = nutrition_product
 

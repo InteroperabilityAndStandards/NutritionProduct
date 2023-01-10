@@ -1,8 +1,6 @@
 """
 To run locally: uvicorn api:app --reload
 """
-
-
 import requests
 from fastapi import FastAPI
 from mangum import Mangum

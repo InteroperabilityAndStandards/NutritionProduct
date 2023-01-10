@@ -37,7 +37,7 @@ def main(product: dict, status_option):
 
         instance = {
             "quantity": "6",
-            "identifier": product["gtinUpc"] if "gtinUpc" in product else None,
+            "identifier": product["gtinUpc"],
             "name": product["description"],
             "lotNumber": "10000004",
             "expiry": "2023/1/31",

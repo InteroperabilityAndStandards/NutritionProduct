@@ -2,4 +2,5 @@ fastapi
 mangum
 uvicorn
 requests
-
+typing_extensions
+fhir.resources
