@@ -4,3 +4,4 @@ component-template-master/
 *.zip
 __pycache__/
 python/
+.DS_Store
