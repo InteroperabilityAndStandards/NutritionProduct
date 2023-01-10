@@ -52,6 +52,8 @@ with sidebar_col2:
     use_server = st.checkbox("Use Server?")
     set_nutrient_product_state_to_none()
 
+if use_server:
+    st.sidebar.write(f"Server URL: {os.getenv('BASE_URL')}")
 
 dashboard_option = st.sidebar.selectbox(
     "Select Dashboard?",
