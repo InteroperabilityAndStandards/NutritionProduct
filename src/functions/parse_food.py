@@ -6,6 +6,7 @@ def main(product: dict, status_option):
     ingredients = []
     manufacturer = []
     nutrients = []
+    ingredient_summary = None
 
     category = None
     if "foodCategory" in product:
@@ -73,6 +74,7 @@ def main(product: dict, status_option):
 
     if "ingredients" in product:
         count = 0
+        ingredient_summary = product["ingredients"]
         for ingredient in re.split(r",(?![^()]*\))", product["ingredients"]):
             count += 1
             random.seed(count)
@@ -91,6 +93,9 @@ def main(product: dict, status_option):
         "status": status_option,
         "category": category if category is not None else "n/a",
         "manufacturer": manufacturer,
+        "ingredientSummary": ingredient_summary
+        if ingredient_summary is not None
+        else "n/a",
         "ingredient": ingredients,
         "nutrients": nutrients,
         "knownAllergen": known_allergens,
