@@ -15,7 +15,7 @@ def main(use_server: bool, base_url: str, supplement_name: str):
         else:
             response = requests.get(
                 f"https://api.ods.od.nih.gov/dsld/v8/label/{supplement_name}",
-                timeout=15,
+                timeout=20,
             )
     if response and response.status_code == 200:
         st.session_state.product_name = supplement_name

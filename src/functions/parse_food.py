@@ -1,6 +1,8 @@
 import re
 import random
 
+from ..functions import remove_nulls
+
 
 def main(product: dict, status_option):
     ingredients = []
@@ -49,7 +51,7 @@ def main(product: dict, status_option):
     manufacturer.append(
         {
             "active": True if "brandOwner" in product else False,
-            "name": product["brandOwner"] if "brandOwner" in product else "n/a",
+            "name": product["brandOwner"] if "brandOwner" in product else None,
         }
     )
     for nutrient in product["foodNutrients"]:
@@ -91,15 +93,17 @@ def main(product: dict, status_option):
         "resourceType": "NutritionProduct",
         "code": code,
         "status": status_option,
-        "category": category if category is not None else "n/a",
+        "category": category if category is not None else None,
         "manufacturer": manufacturer,
         "ingredientSummary": ingredient_summary
         if ingredient_summary is not None
-        else "n/a",
+        else None,
         "ingredient": ingredients,
         "nutrients": nutrients,
         "knownAllergen": known_allergens,
         "instance": instance,
     }
 
-    return nutrition_product
+    final_nutrition_product = remove_nulls.delete_none(nutrition_product)
+
+    return final_nutrition_product

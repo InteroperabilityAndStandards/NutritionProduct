@@ -8,6 +8,7 @@ DEFAULT_FOODS = [
     {"name": "Fugi Apple", "fdc_id": 1750340},
     {"name": "Banana", "fdc_id": 1105314},
     {"name": "Skippy Peanut Butter", "fdc_id": 1759570},
+    {"name": "ENSURE, HIGH PROTEIN POWDER, VANILLA, VANILLA", "fdc_id": 1838332},
 ]
 
 
