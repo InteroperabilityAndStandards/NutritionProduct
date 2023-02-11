@@ -14,6 +14,7 @@ from fhir.resources.fhirtypes import (
     DateTime,
     QuantityType,
     String,
+    RatioType,
 )
 from fhir.resources.identifier import Identifier
 from fhir.resources.organization import Organization

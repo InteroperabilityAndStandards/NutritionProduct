@@ -1,105 +1,36 @@
-import re
-import random
-
 from ..functions import remove_nulls
+from .components import (
+    get_category,
+    get_know_allergen,
+    get_intstance,
+    get_manufacturer,
+    get_nutrient,
+    get_ingredient,
+    get_ingredient_summary,
+    get_code,
+)
 
 
 def main(product: dict, status_option):
-    ingredients = []
-    manufacturer = []
-    nutrients = []
-    ingredient_summary = None
+    code = get_code.main(product, status_option)
+    category = get_category.main(product, status_option)
+    manufacturer = get_manufacturer.main(product, status_option)
+    ingredient = get_ingredient.main(product, status_option)
+    nutrient = get_nutrient.main(product, status_option)
+    known_allergens = get_know_allergen.main(product, status_option)
+    instance = get_intstance.main(product, status_option)
 
-    category = None
-    if "foodCategory" in product:
-        category = product["foodCategory"]["description"]
-
-    if "brandedFoodCategory" in product:
-        category = product["brandedFoodCategory"]
-
-    code = {
-        "coding": {
-            "system": "https://fdc.nal.usda.gov/",
-            "code": product["fdcId"],
-            "display": product["description"],
-        }
-    }
-
-    known_allergens = None
-    instance = None
-    if "butter" in product["description"].lower():
-        known_allergens = [
-            {
-                "coding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "226355009",
-                    "display": "Peanut (substance)",
-                }
-            }
-        ]
-
-        instance = {
-            "quantity": "6",
-            "identifier": product["gtinUpc"] if "gtinUpc" in product else None,
-            "name": product["description"],
-            "lotNumber": "10000004",
-            "expiry": "2023/1/31",
-            "useBy": "2023/1/28",
-            "biologicalSourceEvent": "",
-        }
-
-    manufacturer.append(
-        {
-            "active": True if "brandOwner" in product else False,
-            "name": product["brandOwner"] if "brandOwner" in product else None,
-        }
-    )
-    for nutrient in product["foodNutrients"]:
-
-        quantity = nutrient["amount"] if "amount" in nutrient else None
-        unit = (
-            nutrient["nutrient"]["unitName"]
-            if "unitName" in nutrient["nutrient"]
-            else None
-        )
-
-        nutrients.append(
-            {
-                "name": nutrient["nutrient"]["name"],
-                "amount": {
-                    "value": quantity,
-                    "unit": unit,
-                    "comparator": "ad",
-                },
-            }
-        )
-
-    if "ingredients" in product:
-        count = 0
-        ingredient_summary = product["ingredients"]
-        for ingredient in re.split(r",(?![^()]*\))", product["ingredients"]):
-            count += 1
-            random.seed(count)
-            seed = random.random()
-            ingredients.append(
-                {
-                    "system": "https://fdc.nal.usda.gov/",
-                    "code": int(seed * 100000000),
-                    "display": ingredient.replace(".", "").strip(),
-                }
-            )
+    ingredient_summary = get_ingredient_summary.main(product, status_option)
 
     nutrition_product = {
         "resourceType": "NutritionProduct",
         "code": code,
         "status": status_option,
-        "category": category if category is not None else None,
+        "category": category,
         "manufacturer": manufacturer,
-        "ingredientSummary": ingredient_summary
-        if ingredient_summary is not None
-        else None,
-        "ingredient": ingredients,
-        "nutrients": nutrients,
+        "ingredientSummary": ingredient_summary,
+        "ingredient": ingredient,
+        "nutrient": nutrient,
         "knownAllergen": known_allergens,
         "instance": instance,
     }

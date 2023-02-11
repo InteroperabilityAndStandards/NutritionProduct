@@ -5,3 +5,5 @@ component-template-master/
 __pycache__/
 python/
 .DS_Store
+
+_downloads
