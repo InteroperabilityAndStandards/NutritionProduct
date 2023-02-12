@@ -11,7 +11,7 @@ def main():
     """
     name = "NutritionProduct"
     if st.session_state.nutrition_product is not None:
-        name = st.session_state.nutrition_product["code"]["coding"]["display"]
+        name = st.session_state.nutrition_product["code"]["text"]
     # print("nutrition_product...", json.dumps(nutrition_product, indent=4))
     st.download_button(
         label="Download NutritionProduct",

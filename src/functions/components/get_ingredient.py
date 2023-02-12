@@ -1,9 +1,10 @@
 import re
 import random
 from fhir_types import FHIR_CodeableConcept, FHIR_Ratio
+import pandas as pd
 
 
-def main(product: dict, status_option):
+def main(product: dict, nlp, ruler):
     ingredients = []
 
     if "ingredients" in product:
@@ -13,6 +14,8 @@ def main(product: dict, status_option):
             random.seed(count)
             seed = random.random()
 
+            doc = nlp(str(ingredient))
+            print(doc.ents)
             item: FHIR_CodeableConcept  # not correct
             amount: FHIR_Ratio
 
@@ -23,4 +26,5 @@ def main(product: dict, status_option):
                     "display": ingredient.replace(".", "").strip(),
                 }
             )
+    pd.DataFrame(ingredients).to_csv("ingredients.csv")
     return ingredients

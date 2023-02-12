@@ -1,11 +1,24 @@
 from typing import TypedDict
 
 from fhir_types import (
+    FHIR_Substance,
     FHIR_string,
+    FHIR_CodeableConcept,
     FHIR_Quantity,
     FHIR_Identifier,
     FHIR_dateTime,
 )
+
+FHIR_CodeableReference = TypedDict(
+    "FHIR_CodeableReference",
+    {
+        "id": FHIR_string,
+        "reference": FHIR_Substance,
+        "concept": FHIR_CodeableConcept,
+    },
+    total=False,
+)
+
 
 FHIR_NutritionProductInstance = TypedDict(
     "FHIR_NutritionProductInstance",
@@ -20,16 +33,3 @@ FHIR_NutritionProductInstance = TypedDict(
     },
     total=False,
 )
-
-
-def main(product: dict):
-
-    instance: FHIR_NutritionProductInstance = {}
-
-    if "butter" in product["description"].lower():
-        instance = {
-            "lotNumber": "10000004",
-            "expiry": "2023-01-31",
-            "useBy": "2023-01-28",
-        }
-    return instance

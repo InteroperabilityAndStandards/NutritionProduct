@@ -12,7 +12,7 @@ DEFAULT_FOODS = [
 ]
 
 
-def main(use_server: bool, base_url: str):
+def main(use_server: bool, base_url: str, nlp, ruler):
     """_summary_"""
     response = {}
     nutrition_product = {}
@@ -35,7 +35,7 @@ def main(use_server: bool, base_url: str):
             if use_server is True:
                 nutrition_product = response
             else:
-                nutrition_product = parse_food.main(response, status_option)
+                nutrition_product = parse_food.main(response, status_option, nlp, ruler)
 
             st.session_state.nutrition_product = nutrition_product
 

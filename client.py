@@ -4,14 +4,21 @@ https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 
 
 import os
+from tqdm.auto import tqdm
 
 import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv
 
 from src import dsld_page, fdc_page
+from scispacy.linking import EntityLinker
+import spacy
+
+dir_downloads = os.path.abspath(f"{os.getcwd()}/src/_downloads")
+
 
 load_dotenv()
+
 
 st.set_page_config(page_title="NutrientProduct", page_icon=":pill:")
 
@@ -33,8 +40,44 @@ app_dashboards_df = pd.DataFrame(
 )
 
 
+def create_umls_entity_ruler(ruler, df_cleaned_umls_terms):
+    """A dummy docstring."""
+    print("Creating UMLS entity ruler...")
+    patterns = []
+    for _, row in tqdm(
+        df_cleaned_umls_terms.iterrows(), total=df_cleaned_umls_terms.shape[0]
+    ):
+        patterns.append({"label": row["CUI"], "pattern": row["STR"], "id": row["CUI"]})
+    ruler.add_patterns(patterns)
+
+
+@st.cache_resource
+def load_nlp():
+    nlp = spacy.load("en_core_sci_sm")
+    nlp.add_pipe(
+        "scispacy_linker",
+        config={
+            "resolve_abbreviations": True,
+            "linker_name": "umls",
+            "threshold": 0.85,
+            "filter_for_definitions": False,
+            # "disabling": ["tagger", "parser", "attribute_ruler", "lemmatizer"]
+        },
+    )
+    ruler = nlp.add_pipe("entity_ruler", before="tok2vec")
+    df_cleaned_umls_terms = pd.read_csv(
+        f"{dir_downloads}/umls-data/filtered_umls_atoms.csv"
+    )
+
+    create_umls_entity_ruler(ruler, df_cleaned_umls_terms)
+    return nlp, ruler
+
+
 def set_nutrient_product_state_to_none():
     st.session_state.nutrition_product = None
+
+
+nlp, ruler = load_nlp()
 
 
 if "status_option" not in st.session_state:
@@ -66,7 +109,7 @@ st.caption(dashboard_option)
 
 ### Food Data Central
 if dashboard_option == app_dashboards_df[app_dashboards_df.key == "FDC"].name.item():
-    fdc_page.main(use_server, base_url)
+    fdc_page.main(use_server, base_url, nlp, ruler)
 
 ### Dietary Supplement Label Database
 if dashboard_option == app_dashboards_df[app_dashboards_df.key == "DSLD"].name.item():

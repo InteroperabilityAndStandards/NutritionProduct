@@ -1,7 +1,19 @@
-from fhir_types import FHIR_Ratio, FHIR_Reference, FHIR_Substance
+from fhir_types import FHIR_Ratio
+
+# from custom_types.FHIR_CodeableReference import FHIR_CodeableReference
+
+""" 
+https://build.fhir.org/references.html#Reference
+https://build.fhir.org/references.html#CodeableReference
+
+type should be: FHIR_CodeableReference(FHIR_Substance)
+
+FHIR_CodeableReference is not a valid type in the FHIR spec.
+
+"""
 
 
-def main(product: dict, status_option):
+def main(product: dict):
     nutrients = []
 
     for nutrient in product["foodNutrients"]:
@@ -18,9 +30,7 @@ def main(product: dict, status_option):
                 "numerator": {"value": quantity, "unit": unit, "comparator": "ad"}
             }
 
-            item: FHIR_Substance = {}
+            item = {"concept": {"text": nutrient["nutrient"]["name"]}}
 
-            nutrients.append(
-                {"concept": {"text": nutrient["nutrient"]["name"]}, "amount": amount}
-            )
+            nutrients.append({"item": item, "amount": amount})
     return nutrients

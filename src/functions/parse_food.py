@@ -3,7 +3,7 @@ from .components import (
     get_category,
     get_know_allergen,
     get_intstance,
-    get_manufacturer,
+    # get_manufacturer,
     get_nutrient,
     get_ingredient,
     get_ingredient_summary,
@@ -11,14 +11,14 @@ from .components import (
 )
 
 
-def main(product: dict, status_option):
-    code = get_code.main(product, status_option)
-    category = get_category.main(product, status_option)
-    manufacturer = get_manufacturer.main(product, status_option)
-    ingredient = get_ingredient.main(product, status_option)
-    nutrient = get_nutrient.main(product, status_option)
+def main(product: dict, status_option, nlp, ruler):
+    code = get_code.main(product)  # check
+    category = get_category.main(product)  # check
+    # manufacturer = get_manufacturer.main(product)
+    ingredient = get_ingredient.main(product, nlp, ruler)
+    nutrient = get_nutrient.main(product)
     known_allergens = get_know_allergen.main(product, status_option)
-    instance = get_intstance.main(product, status_option)
+    instance = get_intstance.main(product)  # check
 
     ingredient_summary = get_ingredient_summary.main(product, status_option)
 
@@ -27,7 +27,7 @@ def main(product: dict, status_option):
         "code": code,
         "status": status_option,
         "category": category,
-        "manufacturer": manufacturer,
+        # "manufacturer": manufacturer,
         "ingredientSummary": ingredient_summary,
         "ingredient": ingredient,
         "nutrient": nutrient,

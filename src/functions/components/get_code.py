@@ -1,7 +1,7 @@
 from fhir_types import FHIR_CodeableConcept
 
 
-def main(product: dict, status_option):
+def main(product: dict):
 
     code: FHIR_CodeableConcept = {
         "text": product["description"],

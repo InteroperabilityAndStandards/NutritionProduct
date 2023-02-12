@@ -1,7 +1,7 @@
 from fhir_types import FHIR_CodeableConcept
 
 
-def main(product: dict, status_option):
+def main(product: dict):
     category: FHIR_CodeableConcept = {}
     if "foodCategory" in product:
         category = {
