@@ -36,7 +36,7 @@ def main(product: dict, nlp):
                     umls_cui = entry._.kb_ents[0][0]
                     umls_term = entry.text
 
-                    data: FHIR_CodeableReference = {
+                    item: FHIR_CodeableReference = {
                         "concept": {
                             "text": umls_term,
                             "coding": [
@@ -49,15 +49,17 @@ def main(product: dict, nlp):
                         }
                     }
 
-                    ingredients.append(data)
+                    ingredients.append(
+                        {
+                            "item": item,
+                        }
+                    )
             # data = {
             #     "term_type": ingredient.replace(".", "").strip(),
             #     "umls_cui": umls_cui,
             #     "umls_term": umls_term.upper(),
             # }
 
-            item: FHIR_CodeableConcept  # not correct
-            amount: FHIR_Ratio
             # ingredients.append(
             #     {
             #         "system": "https://uts.nlm.nih.gov/uts/",
