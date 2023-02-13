@@ -9,10 +9,18 @@ DEFAULT_FOODS = [
     {"name": "Banana", "fdc_id": 1105314},
     {"name": "Skippy Peanut Butter", "fdc_id": 1759570},
     {"name": "ENSURE, HIGH PROTEIN POWDER, VANILLA, VANILLA", "fdc_id": 1838332},
+    {
+        "name": "FRENCH VANILLA MAX PROTEIN NUTRITION SHAKE, FRENCH VANILLA",
+        "fdc_id": 1838384,
+    },
+    {
+        "name": "ENSURE, HIGH PROTEIN SHAKE, HOMEMADE VANILLA, HOMEMADE VANILLA",
+        "fdc_id": 1838333,
+    },
 ]
 
 
-def main(use_server: bool, base_url: str, nlp, ruler):
+def main(use_server: bool, base_url: str, nlp):
     """_summary_"""
     response = {}
     nutrition_product = {}
@@ -35,7 +43,7 @@ def main(use_server: bool, base_url: str, nlp, ruler):
             if use_server is True:
                 nutrition_product = response
             else:
-                nutrition_product = parse_food.main(response, status_option, nlp, ruler)
+                nutrition_product = parse_food.main(response, status_option, nlp)
 
             st.session_state.nutrition_product = nutrition_product
 

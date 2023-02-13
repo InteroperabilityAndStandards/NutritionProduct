@@ -16,6 +16,6 @@ def main(product: dict):
         }
 
     if "brandedFoodCategory" in product:
-        category = product["brandedFoodCategory"]
+        category = {"text": product["brandedFoodCategory"]}
 
     return category

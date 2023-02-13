@@ -9,6 +9,7 @@ from tqdm.auto import tqdm
 import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv
+import sqlite3
 
 from src import dsld_page, fdc_page
 from scispacy.linking import EntityLinker
@@ -73,11 +74,17 @@ def load_nlp():
     return nlp, ruler
 
 
+@st.cache_resource
+def init_sqlite3():
+    return sqlite3.connect("fhir.db")
+
+
 def set_nutrient_product_state_to_none():
     st.session_state.nutrition_product = None
 
 
 nlp, ruler = load_nlp()
+init_sqlite3()
 
 
 if "status_option" not in st.session_state:
@@ -109,7 +116,7 @@ st.caption(dashboard_option)
 
 ### Food Data Central
 if dashboard_option == app_dashboards_df[app_dashboards_df.key == "FDC"].name.item():
-    fdc_page.main(use_server, base_url, nlp, ruler)
+    fdc_page.main(use_server, base_url, nlp)
 
 ### Dietary Supplement Label Database
 if dashboard_option == app_dashboards_df[app_dashboards_df.key == "DSLD"].name.item():

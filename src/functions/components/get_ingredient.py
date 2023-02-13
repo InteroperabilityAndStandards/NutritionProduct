@@ -1,10 +1,21 @@
 import re
 import random
-from fhir_types import FHIR_CodeableConcept, FHIR_Ratio
-import pandas as pd
+from fhir_types import FHIR_CodeableConcept, FHIR_Ratio, FHIR_string, FHIR_Substance
+from typing import TypedDict
 
 
-def main(product: dict, nlp, ruler):
+FHIR_CodeableReference = TypedDict(
+    "FHIR_CodeableReference",
+    {
+        "id": FHIR_string,
+        "reference": FHIR_Substance,
+        "concept": FHIR_CodeableConcept,
+    },
+    total=False,
+)
+
+
+def main(product: dict, nlp):
     ingredients = []
 
     if "ingredients" in product:
@@ -14,17 +25,45 @@ def main(product: dict, nlp, ruler):
             random.seed(count)
             seed = random.random()
 
-            doc = nlp(str(ingredient))
-            print(doc.ents)
+            doc = nlp(str(ingredient.lower()))
+            entry_count = 0
+            for entry in doc.ents:
+                entry_count += 1
+                if entry_count != 1:
+                    term_type = "CHILD"
+
+                if entry._.kb_ents:
+                    umls_cui = entry._.kb_ents[0][0]
+                    umls_term = entry.text
+
+                    data: FHIR_CodeableReference = {
+                        "concept": {
+                            "text": umls_term,
+                            "coding": [
+                                {
+                                    "system": "https://uts.nlm.nih.gov/uts/",
+                                    "code": umls_cui,
+                                    "display": umls_term,
+                                }
+                            ],
+                        }
+                    }
+
+                    ingredients.append(data)
+            # data = {
+            #     "term_type": ingredient.replace(".", "").strip(),
+            #     "umls_cui": umls_cui,
+            #     "umls_term": umls_term.upper(),
+            # }
+
             item: FHIR_CodeableConcept  # not correct
             amount: FHIR_Ratio
-
-            ingredients.append(
-                {
-                    "system": "https://fdc.nal.usda.gov/",
-                    "code": int(seed * 100000000),
-                    "display": ingredient.replace(".", "").strip(),
-                }
-            )
-    pd.DataFrame(ingredients).to_csv("ingredients.csv")
+            # ingredients.append(
+            #     {
+            #         "system": "https://uts.nlm.nih.gov/uts/",
+            #         "code": "umls_cui",
+            #         "display": "umls_term",
+            #         "term_type": ingredient.replace(".", "").strip(),
+            #     }
+            # )
     return ingredients

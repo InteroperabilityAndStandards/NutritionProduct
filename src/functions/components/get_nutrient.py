@@ -1,4 +1,6 @@
 from fhir_types import FHIR_Ratio
+from fhir_types import FHIR_CodeableConcept, FHIR_Ratio, FHIR_string, FHIR_Substance
+from typing import TypedDict
 
 # from custom_types.FHIR_CodeableReference import FHIR_CodeableReference
 
@@ -11,6 +13,16 @@ type should be: FHIR_CodeableReference(FHIR_Substance)
 FHIR_CodeableReference is not a valid type in the FHIR spec.
 
 """
+
+FHIR_CodeableReference = TypedDict(
+    "FHIR_CodeableReference",
+    {
+        "id": FHIR_string,
+        "reference": FHIR_Substance,
+        "concept": FHIR_CodeableConcept,
+    },
+    total=False,
+)
 
 
 def main(product: dict):
@@ -30,7 +42,18 @@ def main(product: dict):
                 "numerator": {"value": quantity, "unit": unit, "comparator": "ad"}
             }
 
-            item = {"concept": {"text": nutrient["nutrient"]["name"]}}
+            item: FHIR_CodeableReference = {
+                "concept": {
+                    "text": nutrient["nutrient"]["name"],
+                    "coding": [
+                        {
+                            "system": "https://fdc.nal.usda.gov/",
+                            "code": nutrient["nutrient"]["id"],
+                            "display": nutrient["nutrient"]["name"],
+                        }
+                    ],
+                }
+            }
 
             nutrients.append({"item": item, "amount": amount})
     return nutrients
