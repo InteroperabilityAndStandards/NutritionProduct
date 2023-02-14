@@ -55,15 +55,13 @@ def create_umls_entity_ruler(ruler, df_cleaned_umls_terms):
 
 
 def create_model():
-    path = f"{dir_downloads}/models/src/umls_ner_model"
-    if os.path.exists(path) == False:
-        with ZipFile(f"{dir_downloads}/umls_ner_model.zip", "r") as zObject:
-            zObject.extractall(path=f"models")
+    with ZipFile(f"{dir_downloads}/umls_ner_model.zip", "r") as zObject:
+        zObject.extractall()
 
 
 @st.cache_resource(show_spinner="Loading AI model...")
 def load_nlp():
-    nlp = spacy.load(f"{dir_downloads}/models/src/umls_ner_model")
+    nlp = spacy.load(f"{dir_downloads}/src/umls_ner_model")
     return nlp
 
 

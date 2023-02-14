@@ -10,3 +10,5 @@ models/
 *.zip
 
 _downloads
+
+umls_ner_model/
