@@ -6,16 +6,18 @@ https://raw.githubusercontent.com/omnidan/node-emoji/master/lib/emoji.json
 import os
 from tqdm.auto import tqdm
 
+from zipfile import ZipFile
 import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv
 import sqlite3
 
 from src import dsld_page, fdc_page
-from scispacy.linking import EntityLinker
 import spacy
+from scispacy.linking import EntityLinker  # have to import this to load the model
 
-dir_downloads = os.path.abspath(f"{os.getcwd()}/src/_downloads")
+
+dir_downloads = os.path.abspath(f"{os.getcwd()}")
 
 
 load_dotenv()
@@ -52,26 +54,17 @@ def create_umls_entity_ruler(ruler, df_cleaned_umls_terms):
     ruler.add_patterns(patterns)
 
 
-@st.cache_resource
-def load_nlp():
-    nlp = spacy.load("en_core_sci_sm")
-    nlp.add_pipe(
-        "scispacy_linker",
-        config={
-            "resolve_abbreviations": True,
-            "linker_name": "umls",
-            "threshold": 0.85,
-            "filter_for_definitions": False,
-            # "disabling": ["tagger", "parser", "attribute_ruler", "lemmatizer"]
-        },
-    )
-    ruler = nlp.add_pipe("entity_ruler", before="tok2vec")
-    df_cleaned_umls_terms = pd.read_csv(
-        f"{dir_downloads}/umls-data/filtered_umls_atoms.csv"
-    )
+def create_model():
+    path = f"{dir_downloads}/models/umls_ner_model"
+    if os.path.exists(path) == False:
+        with ZipFile(f"{dir_downloads}/models/umls_ner_model.zip", "r") as zObject:
+            zObject.extractall(path=f"{dir_downloads}")
 
-    create_umls_entity_ruler(ruler, df_cleaned_umls_terms)
-    return nlp, ruler
+
+@st.cache_resource(show_spinner="Loading AI model...")
+def load_nlp():
+    nlp = spacy.load(f"{dir_downloads}/models/umls_ner_model")
+    return nlp
 
 
 @st.cache_resource
@@ -83,7 +76,8 @@ def set_nutrient_product_state_to_none():
     st.session_state.nutrition_product = None
 
 
-nlp, ruler = load_nlp()
+create_model()
+nlp = load_nlp()
 init_sqlite3()
 
 
@@ -121,3 +115,22 @@ if dashboard_option == app_dashboards_df[app_dashboards_df.key == "FDC"].name.it
 ### Dietary Supplement Label Database
 if dashboard_option == app_dashboards_df[app_dashboards_df.key == "DSLD"].name.item():
     dsld_page.main(use_server, base_url)
+
+    # # nlp.from_disk(f"{dir_downloads}/umls_ner_model")
+    # nlp = spacy.load("en_core_sci_sm")
+    # nlp.add_pipe(
+    #     "scispacy_linker",
+    #     config={
+    #         "resolve_abbreviations": True,
+    #         "linker_name": "umls",
+    #         "threshold": 0.85,
+    #         "filter_for_definitions": False,
+    #         # "disabling": ["tagger", "parser", "attribute_ruler", "lemmatizer"]
+    #     },
+    # )
+    # ruler = nlp.add_pipe("entity_ruler", before="tok2vec")
+    # df_cleaned_umls_terms = pd.read_csv(
+    #     f"{dir_downloads}/umls-data/filtered_umls_atoms.csv"
+    # )
+
+    # create_umls_entity_ruler(ruler, df_cleaned_umls_terms)

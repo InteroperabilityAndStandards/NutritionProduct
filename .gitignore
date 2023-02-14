@@ -1,9 +1,12 @@
 .env
 lib/
 component-template-master/
-*.zip
+zip_files/
 __pycache__/
 python/
 .DS_Store
+models/
+
+*.zip
 
 _downloads

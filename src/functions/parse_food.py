@@ -6,7 +6,7 @@ from .components import (
     # get_manufacturer,
     get_nutrient,
     get_ingredient,
-    # get_ingredient_summary,
+    get_ingredient_summary,
     get_code,
 )
 
@@ -24,7 +24,7 @@ def main(product: dict, status_option, nlp):
     known_allergens = get_know_allergen.main(product)
     instance = get_intstance.main(product)  # check
 
-    # ingredient_summary = get_ingredient_summary.main(product, status_option)
+    ingredient_summary = get_ingredient_summary.main(product, status_option)
 
     nutrition_product = {
         "resourceType": "NutritionProduct",
@@ -32,16 +32,15 @@ def main(product: dict, status_option, nlp):
         "status": status_option,
         "category": category,
         # "manufacturer": manufacturer,
-        # "ingredientSummary": ingredient_summary,
         "nutrient": nutrient,
+        "ingredientSummary": ingredient_summary,
     }
-
-    if known_allergens:
-        nutrition_product["knownAllergen"] = known_allergens
-    if instance:
-        nutrition_product["instance"] = instance
     if ingredient:
         nutrition_product["ingredient"] = ingredient
+    if instance:
+        nutrition_product["instance"] = instance
+    if known_allergens:
+        nutrition_product["knownAllergen"] = known_allergens
 
     final_nutrition_product = remove_nulls.delete_none(nutrition_product)
 
