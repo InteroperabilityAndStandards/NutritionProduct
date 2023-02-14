@@ -55,7 +55,7 @@ def create_umls_entity_ruler(ruler, df_cleaned_umls_terms):
 
 
 def create_model():
-    with ZipFile(f"{dir_downloads}/umls_ner_model.zip", "r") as zObject:
+    with ZipFile(f"{dir_downloads}/src/umls_ner_model.zip", "r") as zObject:
         zObject.extractall()
 
 
